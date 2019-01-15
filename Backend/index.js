@@ -11,8 +11,8 @@ var app = express();
 
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', function(err,response){
-  if(err) console.log('There is error connecting with mongo db');
-  console.log('Connection with mongo db successful');
+  if(err) {console.log('There is error connecting with mongo db');}
+  else{console.log('Connection with mongo db successful');}
 });
 mongoose.Promise = global.Promise;
 

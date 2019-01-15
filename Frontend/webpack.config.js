@@ -1,3 +1,5 @@
+const MonacoWebpakcPlugin = require('monaco-editor-webpack-plugin');
+
 module.exports = {
     entry: './src/index.js',
     module: {
@@ -6,11 +8,18 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: ['babel-loader']
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {loader: 'style-loader'},
+                    {loader: 'css-loader'}
+                ]
             }
         ]
     },
     resolve: {
-        extensions: ['*', '.js', '.jsx']
+        extensions: ['*', '.js', '.jsx', '.css']
     },
     output: {
       path: __dirname + '/dist',
@@ -19,5 +28,10 @@ module.exports = {
     },
     devServer: {
       contentBase: './dist'
-    }
+    },
+    plugins: [
+        new MonacoWebpakcPlugin({
+            languages: ['javascript', 'json', 'java']
+        }),
+    ],
 };
