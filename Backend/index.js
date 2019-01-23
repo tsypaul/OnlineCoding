@@ -11,8 +11,8 @@ var app = express();
 
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', function(err,response){
-  if(err) console.log('There is error connecting with mongo db');
-  console.log('Connection with mongo db successful');
+  if(err) {console.log('There is error connecting with mongo db');}
+  else{console.log('Connection with mongo db successful');}
 });
 mongoose.Promise = global.Promise;
 
@@ -77,3 +77,12 @@ app.post('/NewProject',(req,res)=>{
       }
   })
 })
+
+app.post('/code',(req,res)=>{
+  console.log(req.body);
+  res.header('Access-Control-Allow-Origin', ['*']);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.send({msg: "done"});
+});
+
