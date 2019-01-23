@@ -1,0 +1,10 @@
+.backdrop{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background: transparent;
+    /*rgba(0, 0, 0, 0.3); for normal black backdrop*/
+    z-index: 100;
+}

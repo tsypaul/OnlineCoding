@@ -1,9 +1,6 @@
 import React, { Fragment } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
-import Menu from './Menu.jsx';
-import MenuItem from './MenuItem.jsx';
-
 export default class Editor extends React.Component{
 
     constructor(props){
@@ -20,6 +17,19 @@ export default class Editor extends React.Component{
 
     onChange = (newValue, e) => {
         console.log('onChange', newValue, e);
+        fetch('http://localhost:3000/code', {
+            method: 'POST',
+            body: JSON.stringify({
+                code: newValue
+            }),
+            
+            
+        })
+        .then((res)=>{
+            res.json().then((data) =>{
+                console.log(data.msg);
+            });
+        })
     }
 
     editorDidMount = (editor) => {
@@ -86,24 +96,21 @@ export default class Editor extends React.Component{
             automaticLayout: false,
         };
         return (
-            <div>
-                <div className="wrapper">
-                    <select onChange={this.updateLanguageType}>
-                        <option value="javascript">Javascript</option>
-                        <option value="java">Java</option>
-                        <option value="json">JSON</option>
-                    </select>
-                    {value=='java' ? 
-                    <Fragment>
-                        <input onChange={this.inputChange} value={this.state.javaclass}></input>
-                        {   !/^[A-Za-z]+$/.test(this.state.javaclass)?
-                            <span>bad class name</span>
-                            :null}
-                        <button onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
-                    </Fragment>
-                     : null}
-                </div>
-
+            <div style={{height: '100%'}}>
+                <select onChange={this.updateLanguageType}>
+                    <option value="javascript">Javascript</option>
+                    <option value="java">Java</option>
+                    <option value="json">JSON</option>
+                </select>
+                {value=='java' ? 
+                <Fragment>
+                    <input onChange={this.inputChange} value={this.state.javaclass}></input>
+                    {!/^[A-Za-z]+$/.test(this.state.javaclass)?
+                        <span>bad class name</span>
+                    :null}
+                    <button onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
+                </Fragment>
+                : null}
                 <hr/>
 
                 <MonacoEditor
@@ -115,14 +122,6 @@ export default class Editor extends React.Component{
                     editorDidMount={this.editorDidMount}
                 />
 
-                <hr/>
-
-                <button onMouseOver={this.showExplorer} onMouseLeave={this.dismissExplorer}>explorer</button>
-                <Menu>
-                    <MenuItem></MenuItem>
-                    <MenuItem></MenuItem>
-                    <MenuItem></MenuItem>
-                </Menu>
             </div>
         );
     }

@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 
 
-import '../css/dropdown.css';
-import Login from './Login.jsx';
-import Editor from './Editor.jsx';
+import Login from '../Login/Login.jsx';
+import Editor from '../Editor/Editor.jsx';
 
 export default class Navbar extends Component {
 

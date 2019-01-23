@@ -1,0 +1,23 @@
+.ToggleMenuButton{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 24px;
+    width: 36px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.ToggleMenuButton :focus{
+    outline: none;
+    cursor: pointer;
+}
+
+.ToggleMenuButton-line{
+    width: 30px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.5);
+    
+}

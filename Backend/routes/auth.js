@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var bodyParser = require('body-parser');
+var app = express();
 
+app.use(bodyParser());
 
  //POST route for register
 router.post('/register', function (req, res, next) {
@@ -80,9 +83,6 @@ router.get('/logout', function(req, res, next) {
       }
     });
   }
-});
-router.get('/',function(req,res,next){
-  res.send('done');
 });
 
 module.exports = router;
