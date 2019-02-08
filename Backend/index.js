@@ -1,13 +1,28 @@
 var express = require('express');
+var app = express();
 var mongoose= require('mongoose');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
+var fs = require('fs');
+var http = require('http')
+var server = http.createServer(app);
+var io = require('socket.io')(server);
 
-// author: mani
+io.origins('http://localhost:8080');
+
+app.use((req, res)=>{
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+})
+
+//listen to port 3000
+app.set('port', process.env.port || 3000);
 
 //init
-var app = express();
+server.listen(app.get('port'), (err, res) =>{
+  console.log('Server started at port', app.get('port'))
+})
 
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', function(err,response){
@@ -54,11 +69,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//listen to port 3000
-app.set('port', process.env.port || 3000);
-app.listen(app.get('port'), function(err,response){
-    console.log('server is running on port', app.get('port'))
-});
+
 app.post('/NewProject',(req,res)=>{
   var projectName=req.body.projectName;
   var projectPath=req.body.projectPath;
@@ -76,13 +87,29 @@ app.post('/NewProject',(req,res)=>{
       res.sendStatus(200);
       }
   })
+
 })
 
+io.on('connection', (socket)=>{
+  console.log("A user connected");
+  socket.on('code change', (code)=>{
+    console.log(code);
+    io.sockets.emit('code change', code);
+  })
+  socket.on('disconnect', ()=>{
+    console.log("A user disconnected");
+  })
+})
+
+
 app.post('/code',(req,res)=>{
-  console.log(req.body);
-  res.header('Access-Control-Allow-Origin', ['*']);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  console.log(req.body.code);
+  const rootDir = "/Users/shaoyutan/Fall2018";
+  let filename = req.body.name;
+  console.log(rootDir + filename);
+  if(fs.existsSync(rootDir + filename)){
+
+  }
   res.send({msg: "done"});
 });
 

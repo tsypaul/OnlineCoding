@@ -27,7 +27,10 @@ module.exports = {
       filename: 'bundle.js'
     },
     devServer: {
-      contentBase: './dist'
+      contentBase: './dist',
+      proxy:{
+          '/code': 'http://localhost:3000'
+      }
     },
     plugins: [
         new MonacoWebpakcPlugin({

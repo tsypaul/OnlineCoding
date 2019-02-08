@@ -1,5 +1,10 @@
 import React, { Fragment } from 'react';
 import MonacoEditor from 'react-monaco-editor';
+import Axios from 'axios';
+import SocketIOClient from 'socket.io-client';
+
+const io = require('socket.io-client');
+const socket = io();
 
 export default class Editor extends React.Component{
 
@@ -10,6 +15,7 @@ export default class Editor extends React.Component{
             value: 'javascript',
             javaclass: '',
             disabled: 'disabled',
+            endpoint: 'http://localhost:3000'
         }
         this.updateLanguageType = this.updateLanguageType.bind(this);
         this.inputChange = this.inputChange.bind(this);
@@ -17,19 +23,16 @@ export default class Editor extends React.Component{
 
     onChange = (newValue, e) => {
         console.log('onChange', newValue, e);
-        fetch('http://localhost:3000/code', {
-            method: 'POST',
-            body: JSON.stringify({
-                code: newValue
-            }),
-            
-            
-        })
-        .then((res)=>{
-            res.json().then((data) =>{
-                console.log(data.msg);
-            });
-        })
+        // Axios({
+        //     method: 'POST',
+        //     url: '/code',
+        //     data: {code: newValue},
+        // }).then(
+        //     (res)=>{
+        //         console.log(res.data.msg);
+        //     }
+        // )
+        socket.emit('code change', newValue);
     }
 
     editorDidMount = (editor) => {
@@ -88,6 +91,12 @@ export default class Editor extends React.Component{
     }
 
     render(){
+        const socket = SocketIOClient(this.state.endpoint);
+
+        socket.on('code change', (code)=>{
+            this.setState({code: code});
+        });
+
         const {code, value} = this.state;
         const options = {
             selectOnlineNumbers: true,
@@ -112,7 +121,7 @@ export default class Editor extends React.Component{
                 </Fragment>
                 : null}
                 <hr/>
-
+                        
                 <MonacoEditor
                     height="500"
                     language={value}

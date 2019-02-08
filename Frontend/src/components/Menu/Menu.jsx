@@ -4,6 +4,7 @@ import MenuItem from './MenuItem.jsx';
 import './menu.css';
 
 const Menu = props =>{
+
     let files = [
         {name: "abc.java", isDir: false},
         {name: "abc", isDir: true},
@@ -15,6 +16,8 @@ const Menu = props =>{
         menuClasses = 'menu show';
         control = 'control'
     }
+
+    
 
     return (
         <div>

@@ -5,12 +5,14 @@ import ToggleMenuButton from './components/Menu/ToggleMenuButton.jsx';
 import Menu from './components/Menu/Menu.jsx';
 import Backdrop from './components/Menu/Backdrop.jsx';
 import Editor from './components/Editor/Editor.jsx';
+import Dashboard from './public/Dashboard.jsx'
 import './app.css'
 
 export default class App extends React.Component{
 
     state = {
         visible: false,
+        page: 'home'
     }
 
     menuToggleHandler = () =>{
@@ -25,6 +27,11 @@ export default class App extends React.Component{
         );
     }
 
+    changePage = (e) =>{
+        let text = e.target.innerHTML;
+        this.setState({page: text});
+    }
+
     render(){
         let backdrop;
 
@@ -35,14 +42,23 @@ export default class App extends React.Component{
 
         return (
             <div>
-                <div>
-                    <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
-                    <Menu show={this.state.visible}></Menu>
-                    {backdrop}
-                </div>
-                <div className={this.state.visible ? "editor-container-open" : "editor-container-close"}>
-                    <Editor></Editor>
-                </div>
+                <button onClick={this.changePage}>Home</button>
+                <button onClick={this.changePage}>Editor</button>
+                <button onClick={this.changePage}>Profile</button>
+                {this.state.page=="Editor"?
+                    <div>
+                        <div>
+                            <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
+                            <Menu show={this.state.visible}></Menu>
+                            {backdrop}
+                        </div>
+                        <div className={this.state.visible ? "editor-container-open" : "editor-container-close"}>
+                            <Editor></Editor>
+                        </div>
+                    </div>
+                : (this.state.page=="Home"?
+                    <Dashboard></Dashboard>
+                : <div></div>)}
             </div>
         );
     }
