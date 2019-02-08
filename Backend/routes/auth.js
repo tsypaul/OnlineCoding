@@ -2,78 +2,135 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
 
-
- //POST route for register
+//POST routes for user management
+//POST route for register
 router.post('/register', function (req, res, next) {
   // confirm that user typed same password twice
-  if (req.body.password !== req.body.passwordConf) {
-    var err = new Error('Passwords do not match.');
-    err.status = 400;
-    return next(err);
+  const {body}=req;
+  const {
+    username,
+    password,
+    passwordConf
+  } = body;
+  if (password !== passwordConf) {
+     res.status(401).send('Passwords do not match');
+     return next(err);
   }
-   if (req.body.username &&
-      req.body.password &&
-      req.body.passwordConf) {
+   if (username &&
+      password &&
+      passwordConf) {
  
      var userData = {
-       username: req.body.username,
-       password: req.body.password
+       username: username,
+       password: password
      }
- 
+     
+     //Check if username is taken
+     User.find({username: username}, function(err,user){
+       if(err){
+        res.status(404).send('Server Error');
+       }else if(user.length>0){
+        res.status(401).send('username is already taken');
+        return next(err);
+       }
+     })
      //use schema.create to insert data into the db
      User.create(userData, function (err, user) {
        if (err) {
-         return next(err)
+         res.status(404).send('Server Error');
+         return next(err);
        } else {
         req.session.userId = user._id;
-        return res.redirect('/profile');
+        return res.redirect('/dashboard');
        }
       });
     } else {
-    var err = new Error('All fields have to be filled out');
-    err.status = 400;
-    return next(err);
+        res.status(401).send('All fields are required');
+        return next(err);
   }
 });
 
 //POST route for login
 router.post('/login', function (req, res, next) {
-  // confirm that user typed same password twice
-  if (req.body.username && req.body.password) {
-  User.authenticate(req.body.username, req.body.password, function (error, user) {
-    if (error || !user) {
-      var err = new Error('Wrong username or password.');
-      err.status = 401;
+  const {body}=req;
+  const {
+    username,
+    password
+  } = body;
+  if (username && password) {
+  User.authenticate(username, password, function (err, user) {
+    if (err || !user) {
+      res.status(401).send('Wrong username or password.');
       return next(err);
     } else {
       req.session.userId = user._id;
-      return res.redirect('/profile');
+      return res.redirect('/dashboard');
     }
     });
   }else{
-    var err = new Error('Username and password are required.');
-    err.status = 401;
+    res.status(401).send('Username and password are required.');
+    return next(err);
   }
 });
 
-// GET route after registering
+//POST route for Password Change
+router.post('/ChangePassword', function (req, res, next) {
+  //Confirm that the user typed in the right password
+  const {body}=req;
+  const {
+    currentPassword,
+    newPassword,
+    passwordConf
+  } = body;
+  User.findById(req.session.userId, function(err,user){
+    User.authenticate(user.username, currentPassword, function (error, user) {
+      if (error || !user) {
+       res.status(401).send('Wrong password.');
+        return next(err);
+      } else {
+        // confirm that user typed same password twice
+        if (newPassword !== passwordConf) {
+          res.status(401).send('Passwords do not match');
+          return next(err);
+        }else{
+          User.findOne({username:user.username},function(err,user){
+            if(err){
+              res.status(404).send('Server Error');
+              return next(err);
+            }else{
+              user.password=newPassword;
+              user.save();
+              res.send('Password was changed successfully');
+              res.redirect('/profile');
+            }
+            
+          });
+        }
+      }
+      });
+    });
+});
+
+//GET routes for user info and session management
+//GET route for profile
 router.get('/profile', function (req, res, next) {
-  User.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) {
-        return next(error);
+  User.findById(req.session.userId, function (err, user) {
+      if (err) {
+        res.status(404).send('Server Error');
+        return next(err);
       } else {
         return res.json({ name: user.username});
       }
     });
 });
 
-// GET /logout
+//GET route for logout
 router.get('/logout', function(req, res, next) {
   if (req.session) {
     // delete session object
     req.session.destroy(function(err) {
       if(err) {
+        res.status(404).send('Server Error');
         return next(err);
       } else {
         return res.redirect('/');
@@ -81,8 +138,10 @@ router.get('/logout', function(req, res, next) {
     });
   }
 });
+
+
 router.get('/',function(req,res,next){
-  res.send('done');
+  res.send('home');
 });
 
 module.exports = router;
