@@ -36,13 +36,21 @@ router.post('/project/delete', function(req,res){
 
 //GET routes for filing system
 //GET route to get the contents of a folder inside the project directory
+<<<<<<< HEAD
 router.get('/project/folder',function(req,res){
+=======
+/*router.get('/project/folder',function(req,res){
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
     var projectId=req.body.id;
     var folder=req.body.folder;
     //folder is the folder path inside the project
     var contents=fs.readdirSync('../Projects/'+ projectId + '/' + folder);
     res.send(contents);
+<<<<<<< HEAD
 });
+=======
+});*/
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
 //GET route for reading a file
 router.post('/project/file',function(req,res){
    var file=req.body.file;

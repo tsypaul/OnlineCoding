@@ -40,8 +40,14 @@ router.post('/register', function (req, res, next) {
          res.status(404).send('Server Error');
          return next(err);
        } else {
+<<<<<<< HEAD
         req.session.userId = user._id;
         return res.redirect('/dashboard');
+=======
+        req.session.cookie.userId = user._id;
+        req.session.cookie.expires=31556926,
+        res.send({message:'Login Successful', session:req.session.cookie});
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
        }
       });
     } else {
@@ -60,6 +66,7 @@ router.post('/login', function (req, res, next) {
   if (username && password) {
   User.authenticate(username, password, function (err, user) {
     if (err || !user) {
+<<<<<<< HEAD
       res.status(401).send('Wrong username or password.');
       return next(err);
     } else {
@@ -69,6 +76,18 @@ router.post('/login', function (req, res, next) {
     });
   }else{
     res.status(401).send('Username and password are required.');
+=======
+      res.send('Wrong username or password.');
+      return next(err);
+    } else {
+      req.session.userId = user._id;
+      req.session.cookie.expires=31556926,
+      res.send({message:'Login Successful', session:req.session});
+    }
+    });
+  }else{
+    res.send('Username and password are required.');
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
     return next(err);
   }
 });
@@ -85,12 +104,20 @@ router.post('/ChangePassword', function (req, res, next) {
   User.findById(req.session.userId, function(err,user){
     User.authenticate(user.username, currentPassword, function (error, user) {
       if (error || !user) {
+<<<<<<< HEAD
        res.status(401).send('Wrong password.');
+=======
+       res.send('Wrong password.');
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
         return next(err);
       } else {
         // confirm that user typed same password twice
         if (newPassword !== passwordConf) {
+<<<<<<< HEAD
           res.status(401).send('Passwords do not match');
+=======
+          res.send('Passwords do not match');
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
           return next(err);
         }else{
           User.findOne({username:user.username},function(err,user){
@@ -101,7 +128,10 @@ router.post('/ChangePassword', function (req, res, next) {
               user.password=newPassword;
               user.save();
               res.send('Password was changed successfully');
+<<<<<<< HEAD
               res.redirect('/profile');
+=======
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff
             }
             
           });

@@ -1,13 +1,21 @@
 var express = require('express');
 var mongoose= require('mongoose');
-var session = require('express-session');
+const session = require("express-session");
 var bodyParser = require('body-parser');
 var path = require('path');
 var cors = require('cors');
+<<<<<<< HEAD:Backend/server.js
+=======
+var http = require('http')
+
+>>>>>>> 8c1a51c588f69e5037bb5456251a03f071073aff:Backend/server.js
 
 //init
 var app = express();
-
+//app.use('/', express.static('../frontend/build'));
+var server = http.createServer(app);
+var io = require('socket.io')(server);
+io.origins('http://localhost:3000');
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', {useNewUrlParser: true}, function(err,response){
   if(err){
@@ -33,6 +41,17 @@ app.use(session({
   saveUninitialized: false, 
 }));
 
+
+io.on('connection', (socket)=>{
+  console.log("A user connected");
+  socket.on('code change', (code)=>{
+    console.log(code);
+    io.sockets.emit('code change', code);
+  })
+  socket.on('disconnect', ()=>{
+    console.log("A user disconnected");
+  })
+})
 
 // include routes
 var auth=require('./routes/auth');
