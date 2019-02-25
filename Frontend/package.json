@@ -1,45 +1,46 @@
 {
-  "name": "Frontend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server --config ./webpack.config.js --mode development"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
-    ]
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/plugin-proposal-class-properties": "^7.2.3",
-    "@babel/preset-env": "^7.1.6",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.4",
-    "css-loader": "^2.1.0",
-    "monaco-editor-webpack-plugin": "^1.7.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.26.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.14"
-  },
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "@microsoft/file-browser": "^1.0.0-preview.0",
     "axios": "^0.18.0",
-    "react": "^16.6.3",
-    "react-cookie": "^3.0.8",
-    "react-dom": "^16.6.3",
-    "react-monaco-editor": "^0.22.0",
-    "react-router": "^4.3.1",
+    "bootstrap": "^4.3.0",
+    "client-sessions": "^0.8.0",
+    "react": "^16.8.1",
+    "react-alert": "^5.1.0",
+    "react-confirm-alert": "^2.1.0",
+    "react-custom-confirm-alert": "^2.0.7",
+    "react-dom": "^16.8.1",
+    "react-file-explorer": "^1.0.0",
+    "react-keyed-file-browser": "^1.4.3",
+    "react-keyed-file-browser-dynamic": "^1.4.1",
+    "react-list": "^0.8.11",
+    "react-monaco-editor": "^0.24.0",
+    "react-native-input-prompt": "^1.0.0",
+    "react-native-prompt": "^1.0.0",
     "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.5",
+    "react-transition-group": "^2.5.3",
+    "semantic-ui-react": "^0.85.0",
     "socket.io-client": "^2.2.0"
   },
-  "proxy": "localhost:3000"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "proxy": "http://localhost:4000",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

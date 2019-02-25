@@ -1,36 +1,33 @@
 import React, { Component } from 'react'
-import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
-
-
-import Login from '../Login/Login.jsx';
-import Editor from '../Editor/Editor.jsx';
+import {BrowserRouter as Router} from 'react-router-dom';
+import axios from "axios";
+import "./Navbar.css"
 
 export default class Navbar extends Component {
 
-    Login = () =>{
-        return <Login></Login>;
+    Logout = () =>{
+        axios.get('/logout')
+        return (window.location='/');
     }
 
-    Editor = () =>{
-        return <Editor></Editor>
+    profile = () =>{
+        return (window.location='/Profile');
+    }
+
+    dashboard = () =>{
+        return (window.location='/Dashboard');
     }
 
   render() {
     return (
     <Router>
         <div>
-            <ul>
-                <li>
-                    <Link to="/profile">Profile</Link>
-                </li>
-                <li>
-                    <Link to="/Editor">Editor</Link>
-                </li>
-            </ul>
-            <Switch>
-                <Route path="/profile" component={this.Login}></Route>
-                <Route path="/Editor" component={this.Editor}></Route>
-            </Switch>
+            <table>
+                <tr><button className="NavButton" onClick={this.dashboard}>Dashboard</button></tr><br></br>
+                <tr><button className="NavButton" onClick={this.profile}>Profile</button></tr><br></br>
+                <tr><button className="NavButton" onClick={this.Logout}>Logout</button></tr><br></br>
+            </table>
+            
         </div>
     </Router>
     )
