@@ -3,15 +3,22 @@
     display: flex;
     color: white;
 }
-  
+
+h2, .h2 {
+  font-size: 2rem;
+  margin: 25%;
+}
   .App_Side {
-    width: 30%;
+    width: 90%;
     background-color: #199087;
+    background-image: url("black.jpg");
+
   }
-  
+
   .App_Form {
-    width: 70%;
-    background-color: #2E4158;
+    background-image: url("black.jpg");
+    width: 100%;
+    background-color: white;
     padding: 25px 40px;
     overflow: auto;
   }
@@ -23,8 +30,8 @@
   }
   
   .PageSwitcher__Item {
-    background-color: #4C5D72;
-    color: #9DA6B1;
+    background-color: lightblue;
+    color: white;
     padding: 10px 25px;
     cursor: pointer;
     font-size: .9em;
@@ -35,7 +42,7 @@
   }
   
   .PageSwitcher__Item--Active {
-    background-color: #5ED0C0;
+
     color: white;
   }
   
@@ -129,7 +136,7 @@
   
   .FormField__Checkbox {
     position: relative;
-    top: 1.5px;
+    top: 1.5px
   }
   
   .FormField__TermsLink {
@@ -140,3 +147,13 @@
     padding-bottom: 2px;
     margin-left: 5px;
   }
+
+input[type=text] {
+  background-color: #3CBC8D;
+  color: white;
+}
+
+input[type=password] {
+  background-color: #3CBC8D;
+  color: white;
+}

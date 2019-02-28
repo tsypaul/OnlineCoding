@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import "../Home.css";
+
+
+
 axios.defaults.withCredentials = true;
 
 class login extends Component {
@@ -38,22 +41,27 @@ class login extends Component {
 
     render() {
         return (
-        <div className="FormCenter">
-            <form onSubmit={this.handleSubmit} className="FormFields">
-            <div className="FormField">
-                <label className="FormField__Label" htmlFor="username">Username</label>
-                <input type="username" id="username" className="FormField__Input" placeholder="Enter your username" name="username" value={this.state.username} onChange={this.handleChange} />
-              </div>
+            <div className="FormCenter">
+                <form onSubmit={this.handleSubmit}>
+                    <div className="row">
+                        <div className="input-field col s6">
+                            <input type="text" id="username" className="validate" name="username" value={this.state.username} onChange={this.handleChange} />
+                            <label htmlFor="username">Username</label>
 
-              <div className="FormField">
-                <label className="FormField__Label" htmlFor="password">Password</label>
-                <input type="password" id="password" className="FormField__Input" placeholder="Enter your password" name="password" value={this.state.password} onChange={this.handleChange} />
-              </div>
-              <div className="FormField">
-                  <button className="FormField__Button">Login</button>
-              </div>
-            </form>
-          </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="input-field col s6">
+                            <input id="password" type="password" className="validate" name="password" value={this.state.password} onChange={this.handleChange} />
+                            <label htmlFor="password">Password</label>
+                        </div>
+                    </div>
+
+                    <button className="btn btn-large waves-effect waves-light hoverable green accent-3 white-text" type="submit">Login</button>
+
+                </form>
+            </div>
         );
         
     }

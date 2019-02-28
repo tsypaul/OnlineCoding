@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard.jsx'
 import Profile from './components/auth/profile.jsx';
 import Editor from './components/Editor/Editor.jsx';
 
+
 class App extends Component {
   render() {
     return (

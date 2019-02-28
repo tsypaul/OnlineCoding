@@ -36,6 +36,7 @@ class Home extends Component {
             <div className="App_Side">
               <div className="container">
                 <h2>Online Coding Project</h2>
+                  <image> </image>
               </div>
             </div>
             <div className="App_Form">

@@ -41,24 +41,31 @@ class register extends Component {
     render() {
         return (
         <div className="FormCenter">
-            <form onSubmit={this.handleSubmit} className="FormFields">
-              <div className="FormField">
-                <label className="FormField__Label" htmlFor="username">username</label>
-                <input type="text" id="name" className="FormField__Input" placeholder="Enter your username" name="username" value={this.state.username} onChange={this.handleChange} />
-              </div>
-              <div className="FormField">
-                <label className="FormField__Label" htmlFor="password">Password</label>
-                <input type="password" id="password" className="FormField__Input" placeholder="Enter your password" name="password" value={this.state.password} onChange={this.handleChange} />
-              </div>
-              <div className="FormField">
-                <label className="FormField__Label" htmlFor="password">Confirm Your Password</label>
-                <input type="password" id="passwordConf" className="FormField__Input" placeholder="Enter your password again" name="passwordConf" value={this.state.passwordConf} onChange={this.handleChange} />
-              </div>
+            <form onSubmit={this.handleSubmit}>
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="text" id="username" className="validate" name="username" value={this.state.username} onChange={this.handleChange} />
+                        <label htmlFor="username">Username</label>
 
-              
-              <div className="FormField">
-                  <button className="FormField__Button">Sign Up</button>
-              </div>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input id="password" type="password" className="validate" name="password" value={this.state.password} onChange={this.handleChange} />
+                        <label htmlFor="password">Password</label>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input  type="password" id="passwordConf" className="validate" name="passwordConf" value={this.state.passwordConf} onChange={this.handleChange} />
+                        <label htmlFor="password">Confirm Password</label>
+                    </div>
+                </div>
+
+                <button className="btn btn-large waves-effect waves-light hoverable blue accent-3 white-text">Sign Up</button>
+
             </form>
           </div>
         );
