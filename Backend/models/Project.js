@@ -1,9 +1,20 @@
 var mongoose = require('mongoose');
 
 var ProjectSchema = new mongoose.Schema({
-    projectName: {type:String, required:true},
-    projectPath: {type:String, required:true},
-    projectAdmin: {type:String, required:false}
+    projectName: {
+        type:String, 
+        required:true, 
+        unique:false
+    },
+    projectAdmin: {
+        type:String, 
+        required:true, 
+        unique:false
+    },
+    projectPath: {
+        type:String, 
+        default:null
+    }
 });
 
 

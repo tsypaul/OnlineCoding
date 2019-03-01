@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
+import ProjectList from '../components/ProjectList';
 
 export default class Dashboard extends Component {
 
@@ -8,15 +9,14 @@ export default class Dashboard extends Component {
     filename: ''
   }
 
-  newProject(){
-    
+  newProject=(e)=>{
+    this.setState({filename: e.target});
   }
 
   submitNewProject(){
     Axios({
       method: 'POST',
       url: '/code',
-      name: ''
     }).then(
       (res)=>{
         if(res.data == 'exist'){
@@ -29,9 +29,11 @@ export default class Dashboard extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.newProject}>New Project</button>
-        {this.state.visible?
-        <input value={this.state.filename} placeholder="filename with extension"/>:null}
+        <ProjectList></ProjectList>
+        <div id='newProject'>
+          <input onChange={this.newProject} placeholder="filename with extension"/>
+          <button onClick={this.submitNewProject}>New Project</button>
+        </div>
       </div>
     )
   }

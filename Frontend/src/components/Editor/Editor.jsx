@@ -3,8 +3,7 @@ import MonacoEditor from 'react-monaco-editor';
 import Axios from 'axios';
 import SocketIOClient from 'socket.io-client';
 
-const io = require('socket.io-client');
-const socket = io();
+const socket = SocketIOClient('http://localhost:3000');
 
 export default class Editor extends React.Component{
 
@@ -15,14 +14,17 @@ export default class Editor extends React.Component{
             value: 'javascript',
             javaclass: '',
             disabled: 'disabled',
-            endpoint: 'http://localhost:3000'
         }
         this.updateLanguageType = this.updateLanguageType.bind(this);
         this.inputChange = this.inputChange.bind(this);
+        socket.on('code change', (code)=>{
+            this.setState({code: code});
+        });
     }
 
     onChange = (newValue, e) => {
         console.log('onChange', newValue, e);
+        this.setState({code: newValue});
         // Axios({
         //     method: 'POST',
         //     url: '/code',
@@ -91,11 +93,8 @@ export default class Editor extends React.Component{
     }
 
     render(){
-        const socket = SocketIOClient(this.state.endpoint);
 
-        socket.on('code change', (code)=>{
-            this.setState({code: code});
-        });
+        
 
         const {code, value} = this.state;
         const options = {
@@ -130,6 +129,7 @@ export default class Editor extends React.Component{
                     onChange={this.onChange}
                     editorDidMount={this.editorDidMount}
                 />
+                {console.log(this.state.code)}
 
             </div>
         );

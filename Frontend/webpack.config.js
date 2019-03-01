@@ -28,9 +28,11 @@ module.exports = {
     },
     devServer: {
       contentBase: './dist',
-      proxy:{
-          '/code': 'http://localhost:3000'
-      }
+    //   proxy:{
+    //       '/code': 'http://localhost:3000',
+    //       '/loadProject': 'http://localhost:3000',
+    //       '/loadFiles': 'http://localhost:3000'
+    //   }
     },
     plugins: [
         new MonacoWebpakcPlugin({

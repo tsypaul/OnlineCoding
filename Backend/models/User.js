@@ -10,10 +10,6 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-  },
-  passwordConf: {
-    type: String,
-    required: false,
   }
 });
 
@@ -27,7 +23,7 @@ UserSchema.pre('save', function (next) {
       user.password = hash;
       next();
     })
-  });
+});
 
 //authenticate input against database
 UserSchema.statics.authenticate = function (username, password, callback) {

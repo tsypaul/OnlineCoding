@@ -42,9 +42,11 @@ export default class App extends React.Component{
 
         return (
             <div>
-                <button onClick={this.changePage}>Home</button>
-                <button onClick={this.changePage}>Editor</button>
-                <button onClick={this.changePage}>Profile</button>
+                <ul className='navbar'>
+                    <li className='navbar-item' onClick={this.changePage}>Home</li>
+                    <li className='navbar-item' onClick={this.changePage}>Editor</li>
+                    <li className='navbar-item' onClick={this.changePage}>Profile</li>
+                </ul>
                 {this.state.page=="Editor"?
                     <div>
                         <div>

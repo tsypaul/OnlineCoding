@@ -17,14 +17,11 @@ const Menu = props =>{
         control = 'control'
     }
 
-    
-
     return (
         <div>
             <nav className={menuClasses}>
                 <ul>
-                    <div>haha</div>
-                    <div>yes</div>
+                    <MenuItem name='projectName'></MenuItem>
                 </ul>
             </nav>
             <div className={control}></div>

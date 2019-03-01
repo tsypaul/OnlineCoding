@@ -1,0 +1,65 @@
+import React, { Component } from 'react'
+
+import ToggleMenuButton from './components/Menu/ToggleMenuButton.jsx';
+import Menu from './components/Menu/Menu.jsx';
+import Backdrop from './components/Menu/Backdrop.jsx';
+import Editor from './components/Editor/Editor.jsx';
+import Dashboard from './public/Dashboard.jsx'
+
+export default class Home extends Component {
+    state = {
+        visible: false,
+        page: 'home'
+    }
+
+    menuToggleHandler = () =>{
+        this.setState((prevState)=>{
+            return {visible: !prevState.visible};
+        });
+    }
+
+    backdropClickHandler = () =>{
+        this.setState(
+            {visible: false}
+        );
+    }
+
+    changePage = (e) =>{
+        let text = e.target.innerHTML;
+        this.setState({page: text});
+    }
+
+    render(){
+        let backdrop;
+
+        if(this.state.visible){
+            backdrop = <Backdrop backdropClickHandler={this.backdropClickHandler}></Backdrop>
+            
+        }
+
+        return (
+            <div>
+                <ul className='navbar'>
+                    <li className='navbar-item' onClick={this.changePage}>Home</li>
+                    <li className='navbar-item' onClick={this.changePage}>Editor</li>
+                    <li className='navbar-item' onClick={this.changePage}>Profile</li>
+                </ul>
+                {this.state.page=="Editor"?
+                    <div>
+                        <div>
+                            <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
+                            <Menu show={this.state.visible}></Menu>
+                            {backdrop}
+                        </div>
+                        <div className={this.state.visible ? "editor-container-open" : "editor-container-close"}>
+                            <Editor></Editor>
+                        </div>
+                    </div>
+                : (this.state.page=="Home"?
+                    <Dashboard></Dashboard>
+                : <div></div>)}
+            </div>
+        );
+    }
+
+}

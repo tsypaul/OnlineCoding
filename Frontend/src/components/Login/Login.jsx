@@ -1,5 +1,6 @@
 import React from 'react';
 
+import "bootstrap/dist/css/bootstrap.min.css"
 import {withCookies, Cookies} from 'react-cookie';
 import {instanceOf} from 'prop-types';
 
@@ -9,50 +10,56 @@ class Login extends React.Component {
         cookies: instanceOf(Cookies).isRequired
     };
 
-    constructor(props){
-        super(props);
-        this.state ={
-            field: "",
-            password: "",
-        }
+    constructor() {
+        super();
+        this.state = {
+            username: '',
+            password: ''
+        };
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    postLoginInfo(route, data){
-        return fetch(route, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify(data),
+    handleChange(e) {
+        let target = e.target;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
+        let name = target.name;
+
+        this.setState({
+          [name]: value
+        });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        axios.post('/login',this.state).then(function(res){
+          if(res.data.message==='Login Successful'){
+            //console.log(res.data);
+            return (window.location = "/Dashboard");
+          }else{
+            alert(res.data);
+          }
         })
-        .then(res => {
-            cookies.set(JSON.stringify(res.json().name));
-        })
-    }
-
-    handleChange(e){
-        this.setState({field: e.target.value})
-    }
-
-    getPassword(){
-
     }
 
     render(){
-        const field = this.state.field;
-        const pass = this.state.password;
         return(
-            <div>
-                <form method="POST" action="/"> 
-                {/* {this.postLoginInfo('/login',{username: field, password: pass})} */}
-                    <label>Please enter your username</label>
-                    <input value={field} onChange={this.handleChange}/>
-                    <input value={pass} type="password" onChange={this.getPassword}/>
-                    <RenderUsername username={field}></RenderUsername>
-                    <input type="submit" value="submit"/>
-                </form>
-            </div>
+            <div className="FormCenter">
+            <form onSubmit={this.handleSubmit} className="FormFields">
+            <div className="FormField">
+                <label className="FormField__Label" htmlFor="username">Username</label>
+                <input type="username" id="username" className="FormField__Input" placeholder="Enter your username" name="username" value={this.state.username} onChange={this.handleChange} />
+              </div>
+
+              <div className="FormField">
+                <label className="FormField__Label" htmlFor="password">Password</label>
+                <input type="password" id="password" className="FormField__Input" placeholder="Enter your password" name="password" value={this.state.password} onChange={this.handleChange} />
+              </div>
+              <div className="FormField">
+                  <button className="FormField__Button">Login</button>
+              </div>
+            </form>
+          </div>
         );
     }
 
