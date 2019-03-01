@@ -121,8 +121,13 @@ export default class Dashboard extends Component {
           <input className="Input" name="projectName" placeholder="Enter your project name" onChange={this.handleChange}/>
         </div>
         </table>
+          <iframe
+              src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=alifaizann95%40gmail.com&amp;color=%2329527A&amp;ctz=America%2FToronto"
+              style={{borderWidth: 0, width: 800 , height:600, frameBorder:0, scrolling:0}}></iframe>
         </div>
+
       </div>
+
       </Router>
     )
   }
