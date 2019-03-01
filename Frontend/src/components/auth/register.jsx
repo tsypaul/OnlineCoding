@@ -30,7 +30,7 @@ class register extends Component {
     handleSubmit(e) {
         e.preventDefault();
         axios.post('register',this.state).then(function(res){
-          if(res.data==='Login Successful'){
+          if(res.data.message==='Login Successful'){
             return (window.location = "/Dashboard");
           }else{
             alert(res.data);

@@ -27,8 +27,13 @@ export default class Dashboard extends Component {
 
   newProject(e) {
     e.preventDefault();
-    axios.post('/createProject',this.state);
-    return (window.location='/Dashboard');
+    axios.post('/createProject',this.state).then(function(res){
+      if(res.data==='Project was created successfully'){
+        return (window.location='/Dashboard');
+      }else{
+        alert(res.data)
+      }
+    });
   }
 
   handleChange(e) {
