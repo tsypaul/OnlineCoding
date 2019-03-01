@@ -32,19 +32,20 @@ router.post('/register', function (req, res, next) {
        }else if(user.length>0){
         res.send('username is already taken');
         return next(err);
+       }else{
+        //use schema.create to insert data into the db
+        User.create(userData, function (err, user) {
+        if (err) {
+        res.send('Server Error');
+        return next(err);
+        } else {
+       req.session.userId = user._id;
+       req.session.cookie.expires=31556926,
+       res.send({message:'Login Successful', session:req.session});
+      }
+       });
        }
      })
-     //use schema.create to insert data into the db
-     User.create(userData, function (err, user) {
-       if (err) {
-         res.send('Server Error');
-         return next(err);
-       } else {
-        req.session.userId = user._id;
-        req.session.cookie.expires=31556926,
-        res.send({message:'Login Successful', session:req.session});
-       }
-      });
     } else {
         res.send('All fields are required');
         return next(err);
