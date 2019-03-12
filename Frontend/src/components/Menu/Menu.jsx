@@ -1,33 +1,45 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import MenuItem from './MenuItem.jsx';
 import './menu.css';
+import Axios from 'axios';
 
-const Menu = props =>{
+export default class Menu extends Component{
 
-    let files = [
-        {name: "abc.java", isDir: false},
-        {name: "abc", isDir: true},
-        {name: "abc.json", isDir: false},
-        {name: "abc.js", isDir: false}
-    ]
-    let menuClasses = 'menu', control = '';
-    if(props.show){
-        menuClasses = 'menu show';
-        control = 'control'
+
+    constructor(props){
+        super(props);
+        this.state={
+            root: {
+                name: this.props.project,
+                type: 'folder',
+                isOpen: true
+            }
+        }
+        this.toggleDirectory.bind(this);
     }
 
-    return (
-        <div>
-            <nav className={menuClasses}>
-                <ul>
-                    <MenuItem name='projectName'></MenuItem>
-                </ul>
-            </nav>
-            <div className={control}></div>
-        </div>
-        
-      )
-}
+    toggleDirectory(){
+        this.setState({
+            isOpen: !this.isOpen
+        })
+    }
 
-export default Menu;
+    render(){
+
+        let menuClasses = 'menu', control = '';
+        if(this.props.show){
+            menuClasses = 'menu show';
+            control = 'control'
+        }
+
+        return (
+            <div>
+                <nav className={menuClasses}>
+                    <MenuItem item={this.state.root} onClick={this.toggleDirectory} level={0}></MenuItem>
+                </nav>
+                <div className={control}></div>
+            </div>
+        ) 
+    }
+}

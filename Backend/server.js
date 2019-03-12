@@ -4,7 +4,8 @@ const session = require("express-session");
 var bodyParser = require('body-parser');
 var path = require('path');
 var cors = require('cors');
-var http = require('http')
+var http = require('http');
+var fs = require('fs');
 
 
 //init
@@ -87,3 +88,22 @@ app.set('port', process.env.port || 4000);
 app.listen(app.get('port'), function(err,response){
     console.log('server is running on port', app.get('port'))
 });
+
+
+app.post('/loadFiles', (req, res)=>{
+  let name = './../Projects/'+req.body.projectName;
+  fs.readdir(name, (err, files)=>{
+    let filesArray = [];
+    console.log(files)
+    for(let i = 0; i < files.length; i++){
+      let isDirectory = fs.lstatSync(name).isDirectory();
+      let fileObj = {
+        name: files[i],
+        type: isDirectory ? 'folder' : 'file'
+      }
+      filesArray.push(fileObj);
+    }
+    console.log(filesArray);
+    res.send({files: filesArray});
+  })
+})

@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
+import {FaFolderOpen, FaChevronDown, FaFile, FaFolder, FaChevronRight} from 'react-icons/fa';
+
+import './MenuItem.css';
 
 export default class MenuItem extends Component {
+
+    constructor(props){
+        super(props);
+    }
 
     state = {
         fileArr: []
@@ -9,9 +16,9 @@ export default class MenuItem extends Component {
 
     componentDidMount(){
         Axios({
-            method: 'GET',
+            method: 'POST',
             url: '/loadFiles',
-            data: {projectName: this.props.name}
+            data: {projectName: this.props.item.name}
         }).then(
             (res)=>{
                 this.setState({fileArr: res.data.files});
@@ -25,17 +32,36 @@ export default class MenuItem extends Component {
         
     }
 
-    toggleDirectory(e){
+  render() {
 
+    const {item, level, toggleDirectory} = this.props;
+
+    const padding = (level) =>{
+        return level*20;
     }
 
-  render() {
+    const paddingStyle = {
+        paddingLeft: padding
+    }
 
     return (
       <div>
+        <div className='item' style={paddingStyle}>
+            <div className='icons' onClick={toggleDirectory}>
+                {item.type === 'folder' && (item.isOpen ? <FaChevronDown/> : <FaChevronRight/>)}
+            </div>
+
+            <div className='icons'>
+                {item.type === 'file' && <FaFile/>}
+                {item.type === 'folder' && item.isOpen === true && <FaFolderOpen/>}
+                {item.type === 'folder' && !item.isOpen && <FaFolder/>}
+            </div>
+
+            <div onClick={toggleDirectory}>{item.name}</div>
+        </div>
         {this.state.fileArr.map((file, i)=>{
-            return file.isDirectory? (<div className='directory' key={i} onClick={this.toggleDirectory}>{file.filename} directory</div>) 
-            : (<div className='' key={i} onClick={this.openFile}>{file.filename}</div>)
+            <MenuItem item={file} level={level+1}/>
+            {console.log("here")}
         })}
       </div>
     )
@@ -43,15 +69,3 @@ export default class MenuItem extends Component {
 }
 
 
-// const MenuItem = props => {
-
-//     Axios
-
-//     let isDir = <div className="menu-item">{props.name}</div>
-//     if(props.dir){
-//         isDir = <MenuItem className="menu-item dir"></MenuItem>
-//     }
-//     return {isDir}
-// }
-
-// export default MenuItem;

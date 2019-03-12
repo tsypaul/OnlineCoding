@@ -51,7 +51,7 @@ export default class App extends React.Component{
                     <div>
                         <div>
                             <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
-                            <Menu show={this.state.visible}></Menu>
+                            <Menu show={this.state.visible} project="a"></Menu>
                             {backdrop}
                         </div>
                         <div className={this.state.visible ? "editor-container-open" : "editor-container-close"}>
