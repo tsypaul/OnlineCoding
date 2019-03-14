@@ -11,8 +11,9 @@ var http = require('http')
 var app = express();
 //app.use('/', express.static('../frontend/build'));
 var server = http.createServer(app);
-var io = require('socket.io')(server);
-io.origins('http://localhost:3000');
+var io = require('socket.io').listen(3000, {
+  pingTimeout: 60000,
+});
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', {useNewUrlParser: true}, function(err,response){
   if(err){

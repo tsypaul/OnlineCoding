@@ -6,7 +6,8 @@ var Member = require('../models/Member');
 var fs = require('fs-extra');
 var ObjectID = require('mongodb').ObjectID;
 var walk=require('walk-sync');
-var moment=require('moment')
+var moment=require('moment');
+var path=require('path');
 
 //POST route for creating a new project
 router.post('/createProject',function (req, res) {
@@ -309,15 +310,9 @@ router.get('/project/contents/:id',function(req,res){
                     }else if(doc.length===0){
                         res.send('User is not a member')
                     }else{
-                        var key= walk('../Projects/'+projectId, { includeBasePath: false,directories: false});
-                        var files=[];
-                        key.map(function(file,index){
-                        var stats = fs.statSync('../Projects/'+projectId+'/'+file);
-                        var fileSizeInBytes = stats["size"];
-                        var mtime =  +moment().subtract(new Date().getTime()-stats.mtime);
-                        files[index]={key:file,modified:mtime,size:fileSizeInBytes}
-                        });
-                        res.send(files);
+                        data = dirTree('../Projects/' + projectId);
+                        console.log(data);
+                        res.send(data);
                     }
                 })
             }
@@ -325,5 +320,33 @@ router.get('/project/contents/:id',function(req,res){
     }
 
 });
+
+dirTree = (filename) =>{
+    let stats = fs.lstatSync(filename),
+        info = {
+            path: filename,
+            name: path.basename(filename),
+        };
+
+    if (stats.isDirectory()) {
+        info.toggled = true;
+        info.type = 'folder'
+        info.children = fs.readdirSync(filename).map(function(child) {
+            return dirTree(filename + '/' + child);
+        });
+    }else{
+        info.type = 'file'
+    }
+
+    return info;
+}
+
+router.post('/project/code', (req, res)=>{
+    const filename = req.body.name;
+    console.log(filename);
+    fs.readFile(filename, (err, data) => {
+        res.send(data);
+    })
+})
 
 module.exports = router;

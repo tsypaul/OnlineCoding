@@ -1,0 +1,62 @@
+.editor-container-open{
+    margin-left: 400px;
+}
+
+.editor-container-close{
+    margin-left: 0;
+}
+
+.navbar{
+    position: sticky;
+    top: 0;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.navbar-item{
+    margin: 0;
+    display: block;
+    color: white;
+    float: left;
+    padding: 14px 16px;
+}
+
+.navbar-item:hover{
+    background-color: #111;
+    cursor: pointer;
+}
+
+.file-explorer, .editor{
+    width: 30%;
+    height: auto;
+    display: inline-block;
+    Vertical-Align: top;
+}
+
+.editor{
+    width: 70%;
+}
+
+.editor-container{
+    background-color: #282C34;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.class-input{
+    color: white;
+}
+
+.customized-button{
+    border-radius: 2px;
+    background-color: #333;
+    color: white
+}
+
+

@@ -1,6 +1,5 @@
 import React from 'react';
 import './FileBrowser.css';
-import axios from "axios";
 
 class FileBrowser extends React.Component{
     render(){
@@ -9,13 +8,11 @@ class FileBrowser extends React.Component{
             menuClasses = 'menu show';
         }
         return(
-            <div>
-            <nav className={menuClasses}>
-                <h2>File Explorer</h2><br></br>
-                <div>{this.props.files.map((file)=>(
+            <div className={menuClasses}>
+                <h2>{this.props.name}</h2>
+                {this.props.files.map((file)=>(
                     <div>{file.key}</div>
-                ))}</div>
-            </nav>
+                ))}
             </div>
         )
     }

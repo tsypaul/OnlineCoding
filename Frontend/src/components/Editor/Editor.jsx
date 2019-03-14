@@ -7,9 +7,16 @@ import ToggleMenuButton from '../Menu/ToggleMenuButton.jsx';
 import FileBrowser from '../Menu/FileBrowser.jsx';
 import Members from '../Menu/Members.jsx';
 import Backdrop from '../Menu/Backdrop.jsx';
+import {Treebeard, decorators} from 'react-treebeard/lib'
 
+import './Editor.css'
+import Axios from 'axios';
+  
+//   decorators.Header = {
 
-const socket = SocketIOClient('http://localhost:4000');
+//   }
+
+const socket = SocketIOClient('http://localhost:3000');
 
 export default class Editor extends Component{
     
@@ -18,7 +25,7 @@ export default class Editor extends Component{
         this.state = {
             FilesVisible: false,
             MembersVisible:false,
-            files:[],
+            files:{},
             members:[],
             code: '// type your code... \n',
             value: 'javascript',
@@ -33,6 +40,10 @@ export default class Editor extends Component{
         this.projectMembers=this.projectMembers.bind(this);
         this.updateLanguageType = this.updateLanguageType.bind(this);
         this.inputChange = this.inputChange.bind(this);
+        this.onToggle = this.onToggle.bind(this);
+        socket.on('code change', (code)=>{
+            this.setState({code: code});
+        });
     }
 
     menuToggleHandler(){
@@ -52,14 +63,17 @@ export default class Editor extends Component{
             {FilesVisible: false, MembersVisible:false}
         );
     }
+
     componentDidMount(){
         this.projectFiles();
         this.projectMembers();
     }
+
     projectFiles(){
         let currentComponent = this;
         let req={
-            id:this.props.match.params.id
+            id:this.props.match.params.id,
+            name:this.props.match.params.projectName
         }
         axios.get('/project/contents/'+req.id).then(function(res){
             if(res.data==='User is not logged in'){
@@ -71,24 +85,17 @@ export default class Editor extends Component{
             }
         })
     }
+
     projectMembers(){
         let req={
             id:this.props.match.params.id
         }
-        axios.get('/project/members/'+req.id).then(res=>this.setState({members:res.data}))
+        axios.get('/project/members/'+req.id)
+        .then(res=>this.setState({members:res.data}));
     }
 
-    onChange = (newValue, e) => {
-        console.log('onChange', newValue, e);
-        // Axios({
-        //     method: 'POST',
-        //     url: '/code',
-        //     data: {code: newValue},
-        // }).then(
-        //     (res)=>{
-        //         console.log(res.data.msg);
-        //     }
-        // )
+    onChange = (newValue) => {
+        console.log('onChange', newValue);
         socket.emit('code change', newValue);
     }
 
@@ -138,11 +145,26 @@ export default class Editor extends Component{
         console.log(this.state);
     }
 
+    onToggle(node, toggled){
+        console.log(node.name)
+        if(node.type === 'file'){
+            
+            axios.post('/project/code/', {name: node.path})
+            .then((res)=>{
+                this.onChange(res.data);
+            })
+        }
+        
+        if(node.children){
+            node.toggled = toggled;
+        }
+        this.setState({cursor: node});
+        console.log(this.state.files);
+    }
+
     render(){
 
-        socket.on('code change', (code)=>{
-            this.setState({code: code});
-        });
+        
 
         const {code, value} = this.state;
         const options = {
@@ -159,18 +181,19 @@ export default class Editor extends Component{
 
         return (
             <Router>
+            <div className='editor-container'>
+            <ul className='navbar'>
+                    <li className='navbar-item' >Home</li>
+                    <li className='navbar-item' >Profile</li>
+            </ul>
             <div>
-            <div>
-                <h1>{this.props.match.params.projectName}</h1>
-                <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
-                <FileBrowser id={this.props.match.params.id} show={this.state.FilesVisible} files={this.state.files}></FileBrowser>
-                {backdrop}
-            </div>
-            <div>
-                <button onClick={this.membersToggleHandler}>Members</button>
+                <button className='customized-button' onClick={this.membersToggleHandler}>Members</button>
                 <Members id={this.props.match.params.id} name={this.props.match.params.projectName} show={this.state.MembersVisible} members={this.state.members}></Members>
             </div>
-            <div style={{height: '100%'}}>
+            <div className='file-explorer'>
+                <Treebeard data={this.state.files} onToggle={this.onToggle}></Treebeard>
+            </div>
+            <div className='editor'>
                 <select onChange={this.updateLanguageType}>
                     <option value="javascript">Javascript</option>
                     <option value="java">Java</option>
@@ -180,20 +203,21 @@ export default class Editor extends Component{
                 <Fragment>
                     <input onChange={this.inputChange} value={this.state.javaclass}></input>
                     {!/^[A-Za-z]+$/.test(this.state.javaclass)?
-                        <span>bad class name</span>
+                        <span className='class-input'>bad class name</span>
                     :null}
-                    <button onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
+                    <button className='customized-button' onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
                 </Fragment>
                 : null}
                 <hr/>
                         
                 <MonacoEditor
-                    height="500"
+                    height="700"
                     language={value}
                     value={code}
                     options={options}
                     onChange={this.onChange}
                     editorDidMount={this.editorDidMount}
+                    theme='vs-dark'
                 />
 
             </div>
