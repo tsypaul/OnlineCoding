@@ -11,9 +11,7 @@ var http = require('http')
 var app = express();
 //app.use('/', express.static('../frontend/build'));
 var server = http.createServer(app);
-var io = require('socket.io').listen(3000, {
-  pingTimeout: 60000,
-});
+
 //connect to MongoDB
 var db = mongoose.connect('mongodb://localhost:27017/OnlineCodingProject', {useNewUrlParser: true}, function(err,response){
   if(err){
@@ -38,18 +36,6 @@ app.use(session({
   resave: false, 
   saveUninitialized: false, 
 }));
-
-
-io.on('connection', (socket)=>{
-  console.log("A user connected");
-  socket.on('code change', (code)=>{
-    console.log(code);
-    io.sockets.emit('code change', code);
-  })
-  socket.on('disconnect', ()=>{
-    console.log("A user disconnected");
-  })
-})
 
 // include routes
 var auth=require('./routes/auth');

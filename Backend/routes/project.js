@@ -9,6 +9,10 @@ var walk=require('walk-sync');
 var moment=require('moment');
 var path=require('path');
 
+var io = require('socket.io').listen(3000, {
+    pingTimeout: 60000,
+  });
+
 //POST route for creating a new project
 router.post('/createProject',function (req, res) {
     User.findById(req.session.userId,function(err,user){
@@ -311,7 +315,7 @@ router.get('/project/contents/:id',function(req,res){
                         res.send('User is not a member')
                     }else{
                         data = dirTree('../Projects/' + projectId);
-                        console.log(data);
+                        // console.log(data);
                         res.send(data);
                     }
                 })
@@ -341,12 +345,35 @@ dirTree = (filename) =>{
     return info;
 }
 
+
+// io.on('connection', (socket)=>{
+//     console.log("A user connected");
+//     socket.on('code change', (code)=>{
+//       console.log(code);
+//       io.sockets.emit('code change', code);
+//     })
+//     socket.on('disconnect', ()=>{
+//       console.log("A user disconnected");
+//     })
+//   })
+
 router.post('/project/code', (req, res)=>{
     const filename = req.body.name;
     console.log(filename);
+    io.on('connection', (socket)=>{
+        console.log('User ' + socket.id + ' connected');
+        socket.on('disconnect', ()=>{
+            console.log('User ' + socket.id + ' disconnected');
+        })
+        socket.on(filename, (code)=>{
+            socket.emit(filename, code);
+            fs.writeFileSync(filename, code);
+        })
+    })
     fs.readFile(filename, (err, data) => {
         res.send(data);
     })
 })
+
 
 module.exports = router;

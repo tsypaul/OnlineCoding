@@ -1,3 +1,3 @@
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-public class Launcher {
-}
+(code) =>{
+                    console.log("save to file");
+                }

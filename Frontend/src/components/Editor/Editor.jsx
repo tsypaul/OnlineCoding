@@ -3,18 +3,16 @@ import { BrowserRouter as Router } from "react-router-dom";
 import MonacoEditor from 'react-monaco-editor';
 import axios from 'axios';
 import SocketIOClient from 'socket.io-client';
-import ToggleMenuButton from '../Menu/ToggleMenuButton.jsx';
-import FileBrowser from '../Menu/FileBrowser.jsx';
+
 import Members from '../Menu/Members.jsx';
 import Backdrop from '../Menu/Backdrop.jsx';
 import {Treebeard, decorators} from 'react-treebeard/lib'
-
 import './Editor.css'
-import Axios from 'axios';
   
 //   decorators.Header = {
 
 //   }
+
 
 const socket = SocketIOClient('http://localhost:3000');
 
@@ -41,9 +39,7 @@ export default class Editor extends Component{
         this.updateLanguageType = this.updateLanguageType.bind(this);
         this.inputChange = this.inputChange.bind(this);
         this.onToggle = this.onToggle.bind(this);
-        socket.on('code change', (code)=>{
-            this.setState({code: code});
-        });
+        this.onChange = this.onChange.bind(this);
     }
 
     menuToggleHandler(){
@@ -94,9 +90,10 @@ export default class Editor extends Component{
         .then(res=>this.setState({members:res.data}));
     }
 
-    onChange = (newValue) => {
+    onChange = (newValue, path) => {
         console.log('onChange', newValue);
-        socket.emit('code change', newValue);
+        this.setState({code: newValue});
+        socket.emit(path, newValue);
     }
 
     editorDidMount = (editor) => {
@@ -148,23 +145,23 @@ export default class Editor extends Component{
     onToggle(node, toggled){
         console.log(node.name)
         if(node.type === 'file'){
-            
             axios.post('/project/code/', {name: node.path})
             .then((res)=>{
-                this.onChange(res.data);
+                this.onChange(res.data, node.path);
             })
         }
-        
+        socket.on(node.path, (code)=>{
+            this.setState({code: code})
+        })
         if(node.children){
             node.toggled = toggled;
         }
         this.setState({cursor: node});
-        console.log(this.state.files);
+        // console.log(this.state.files);
     }
+    
 
     render(){
-
-        
 
         const {code, value} = this.state;
         const options = {
@@ -182,45 +179,45 @@ export default class Editor extends Component{
         return (
             <Router>
             <div className='editor-container'>
-            <ul className='navbar'>
-                    <li className='navbar-item' >Home</li>
-                    <li className='navbar-item' >Profile</li>
-            </ul>
-            <div>
-                <button className='customized-button' onClick={this.membersToggleHandler}>Members</button>
-                <Members id={this.props.match.params.id} name={this.props.match.params.projectName} show={this.state.MembersVisible} members={this.state.members}></Members>
-            </div>
-            <div className='file-explorer'>
-                <Treebeard data={this.state.files} onToggle={this.onToggle}></Treebeard>
-            </div>
-            <div className='editor'>
-                <select onChange={this.updateLanguageType}>
-                    <option value="javascript">Javascript</option>
-                    <option value="java">Java</option>
-                    <option value="json">JSON</option>
-                </select>
-                {value==='java' ? 
-                <Fragment>
-                    <input onChange={this.inputChange} value={this.state.javaclass}></input>
-                    {!/^[A-Za-z]+$/.test(this.state.javaclass)?
-                        <span className='class-input'>bad class name</span>
-                    :null}
-                    <button className='customized-button' onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
-                </Fragment>
-                : null}
-                <hr/>
-                        
-                <MonacoEditor
-                    height="700"
-                    language={value}
-                    value={code}
-                    options={options}
-                    onChange={this.onChange}
-                    editorDidMount={this.editorDidMount}
-                    theme='vs-dark'
-                />
+                <ul className='navbar'>
+                        <li className='navbar-item' >Home</li>
+                        <li className='navbar-item' >Profile</li>
+                </ul>
+                <div>
+                    <button className='customized-button' onClick={this.membersToggleHandler}>Members</button>
+                    <Members id={this.props.match.params.id} name={this.props.match.params.projectName} show={this.state.MembersVisible} members={this.state.members}></Members>
+                </div>
+                <div className='file-explorer'>
+                    <Treebeard data={this.state.files} onToggle={this.onToggle}></Treebeard>
+                </div>
+                <div className='editor'>
+                    <select onChange={this.updateLanguageType}>
+                        <option value="javascript">Javascript</option>
+                        <option value="java">Java</option>
+                        <option value="json">JSON</option>
+                    </select>
+                    {value==='java' ? 
+                    <Fragment>
+                        <input onChange={this.inputChange} value={this.state.javaclass}></input>
+                        {!/^[A-Za-z]+$/.test(this.state.javaclass)?
+                            <span className='class-input'>bad class name</span>
+                        :null}
+                        <button className='customized-button' onClick={this.javaAddClass} disabled={!/^[A-Za-z]+$/.test(this.state.javaclass)}>Add Class</button>
+                    </Fragment>
+                    : null}
+                    <hr/>
+                            
+                    <MonacoEditor
+                        height="700"
+                        language={value}
+                        value={code}
+                        options={options}
+                        onChange={this.onChange}
+                        editorDidMount={this.editorDidMount}
+                        theme='vs-dark'
+                    />
 
-            </div>
+                </div>
             </div>
             </Router>
         );
