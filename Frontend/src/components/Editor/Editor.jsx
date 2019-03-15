@@ -28,7 +28,9 @@ export default class Editor extends Component{
             code: '// type your code... \n',
             value: 'javascript',
             javaclass: '',
-            disabled: 'disabled'
+            disabled: 'disabled',
+            cursor: {},
+            filename: ''
         }
         this.menuToggleHandler=this.menuToggleHandler.bind(this);
         this.membersToggleHandler=this.membersToggleHandler.bind(this);
@@ -40,6 +42,11 @@ export default class Editor extends Component{
         this.inputChange = this.inputChange.bind(this);
         this.onToggle = this.onToggle.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.addFileName =  this.addFileName.bind(this);
+        this.addFile = this.addFile.bind(this);
+        socket.on('code change', (code)=>{
+            this.setState({code: code});
+        });
     }
 
     menuToggleHandler(){
@@ -94,6 +101,7 @@ export default class Editor extends Component{
         console.log('onChange', newValue);
         this.setState({code: newValue});
         socket.emit(path, newValue);
+        socket.emit('code change', newValue);
     }
 
     editorDidMount = (editor) => {
@@ -151,15 +159,39 @@ export default class Editor extends Component{
             })
         }
         socket.on(node.path, (code)=>{
-            this.setState({code: code})
+            this.setState({code:code})
         })
         if(node.children){
             node.toggled = toggled;
         }
         this.setState({cursor: node});
+        console.log(this.state.cursor);
         // console.log(this.state.files);
     }
+
+    Logout = () =>{
+        axios.get('/logout')
+        return (window.location='/');
+    }
     
+    dashboard = () =>{
+        return (window.location='/Dashboard');
+    }
+
+    addFile(){
+        let req={
+            id:this.props.match.params.id
+        }
+        axios.post('/project/addfile/'+req.id, {name: this.state.filename})
+        .then(res => console.log(res));
+        
+    }
+
+    addFileName(e){
+        this.setState({
+            filename: e.target.value,
+        });
+    }
 
     render(){
 
@@ -180,12 +212,16 @@ export default class Editor extends Component{
             <Router>
             <div className='editor-container'>
                 <ul className='navbar'>
-                        <li className='navbar-item' >Home</li>
-                        <li className='navbar-item' >Profile</li>
+                        <li className='navbar-item' onClick={this.dashboard}>Home</li>
+                        <li className='navbar-item' onClick={this.Logout}>Logout</li>
                 </ul>
                 <div>
                     <button className='customized-button' onClick={this.membersToggleHandler}>Members</button>
                     <Members id={this.props.match.params.id} name={this.props.match.params.projectName} show={this.state.MembersVisible} members={this.state.members}></Members>
+                </div>
+                <div>
+                    <input onChange={this.addFileName} value={this.state.filename}></input>
+                    <button className='customized-button' onClick={this.addFile}>Add</button>
                 </div>
                 <div className='file-explorer'>
                     <Treebeard data={this.state.files} onToggle={this.onToggle}></Treebeard>
@@ -216,7 +252,7 @@ export default class Editor extends Component{
                         editorDidMount={this.editorDidMount}
                         theme='vs-dark'
                     />
-
+                    
                 </div>
             </div>
             </Router>

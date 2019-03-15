@@ -315,7 +315,7 @@ router.get('/project/contents/:id',function(req,res){
                         res.send('User is not a member')
                     }else{
                         data = dirTree('../Projects/' + projectId);
-                        // console.log(data);
+                        console.log(data);
                         res.send(data);
                     }
                 })
@@ -346,16 +346,16 @@ dirTree = (filename) =>{
 }
 
 
-// io.on('connection', (socket)=>{
-//     console.log("A user connected");
-//     socket.on('code change', (code)=>{
-//       console.log(code);
-//       io.sockets.emit('code change', code);
-//     })
-//     socket.on('disconnect', ()=>{
-//       console.log("A user disconnected");
-//     })
-//   })
+io.on('connection', (socket)=>{
+    console.log("A user connected");
+    socket.on('code change', (code)=>{
+      console.log(code);
+      io.sockets.emit('code change', code);
+    })
+    socket.on('disconnect', ()=>{
+      console.log("A user disconnected");
+    })
+  })
 
 router.post('/project/code', (req, res)=>{
     const filename = req.body.name;
@@ -374,6 +374,13 @@ router.post('/project/code', (req, res)=>{
         res.send(data);
     })
 })
+
+router.post('/project/addfile/:id', (req, res)=>{
+    const filename = '../Projects/'+ req.params.id+'/'+req.body.name;
+    fs.writeFileSync(filename, '');
+})
+
+
 
 
 module.exports = router;
