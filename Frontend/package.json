@@ -41,7 +41,9 @@
     "react-monaco-editor": "^0.22.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "socket.io-client": "^2.2.0"
+    "react-treebeard": "^2.1.0",
+    "socket.io-client": "^2.2.0",
+    "styled-components": "^3.4.5"
   },
   "proxy": "localhost:3000"
 }

@@ -2,17 +2,94 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import ToggleMenuButton from './components/Menu/ToggleMenuButton.jsx';
-import Menu from './components/Menu/Menu.jsx';
 import Backdrop from './components/Menu/Backdrop.jsx';
 import Editor from './components/Editor/Editor.jsx';
 import Dashboard from './public/Dashboard.jsx'
 import './app.css'
+import MenuContainer from './components/Menu/MenuContainer.jsx';
+import {Treebeard} from 'react-treebeard/lib';
+
+
+const data = {
+    "name": "react-treebeard",
+    "toggled": true,
+    "children": [
+        {
+            "name": "example",
+            "children": [
+                {
+                    "name": "app.js",
+                    "active": false
+                },
+                {
+                    "name": "data.js"
+                },
+                {
+                    "name": "index.html"
+                },
+                {
+                    "name": "styles.js"
+                },
+                {
+                    "name": "webpack.config.js"
+                }
+            ],
+            "active": false,
+            "toggled": true
+        },
+        {
+            "name": "src",
+            "children": [
+                {
+                    "name": "components",
+                    "children": [
+                        {
+                            "name": "decorators.js"
+                        },
+                        {
+                            "name": "treebeard.js"
+                        }
+                    ]
+                },
+                {
+                    "name": "index.js"
+                }
+            ],
+            "active": false,
+            "toggled": true
+        },
+        {
+            "name": "themes",
+            "children": [
+                {
+                    "name": "animations.js"
+                },
+                {
+                    "name": "default.js"
+                }
+            ],
+            "active": false,
+            "toggled": true
+        },
+        {
+            "name": "Gulpfile.js"
+        },
+        {
+            "name": "index.js"
+        },
+        {
+            "name": "package.json"
+        }
+    ],
+    "active": true
+}
 
 export default class App extends React.Component{
 
     state = {
         visible: false,
-        page: 'home'
+        page: 'home',
+        fileArr: {data}
     }
 
     menuToggleHandler = () =>{
@@ -49,14 +126,15 @@ export default class App extends React.Component{
                 </ul>
                 {this.state.page=="Editor"?
                     <div>
-                        <div>
-                            <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton>
-                            <Menu show={this.state.visible} project="a"></Menu>
-                            {backdrop}
+                        <div className='component'>
+                            {/* <ToggleMenuButton menuClickHandler={this.menuToggleHandler}></ToggleMenuButton> */}
+                            {/* <MenuContainer show={this.state.visible} project="a"></MenuContainer> */}
+                            {/* {backdrop} */}
+                            <Treebeard data={this.state.fileArr}></Treebeard>
                         </div>
-                        <div className={this.state.visible ? "editor-container-open" : "editor-container-close"}>
+                        {/* <div className='component'>
                             <Editor></Editor>
-                        </div>
+                        </div> */}
                     </div>
                 : (this.state.page=="Home"?
                     <Dashboard></Dashboard>

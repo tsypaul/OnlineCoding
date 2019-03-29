@@ -89,21 +89,40 @@ app.listen(app.get('port'), function(err,response){
     console.log('server is running on port', app.get('port'))
 });
 
-
 app.post('/loadFiles', (req, res)=>{
   let name = './../Projects/'+req.body.projectName;
-  fs.readdir(name, (err, files)=>{
-    let filesArray = [];
-    console.log(files)
-    for(let i = 0; i < files.length; i++){
-      let isDirectory = fs.lstatSync(name).isDirectory();
-      let fileObj = {
-        name: files[i],
-        type: isDirectory ? 'folder' : 'file'
-      }
-      filesArray.push(fileObj);
-    }
-    console.log(filesArray);
-    res.send({files: filesArray});
-  })
+  let filesObj = {};
+  filesObj[name] = {
+    path: name,
+    type: 'folder',
+    isRoot: true,
+    children: fs.readdirSync(name)
+  }
+  
+  filesObj = traverseDir(name, filesObj);
+  console.log(filesObj);
 })
+
+traverseDir = (name, filesObj) =>{
+  const files = {};
+  fs.readdirSync(name).forEach(file => {
+    let fullPath = path.join(name, file);
+    if (fs.lstatSync(fullPath).isDirectory()) {
+       console.log(fullPath);
+       files[fullPath]={
+        path: fullPath,
+        type: 'folder',
+        children: fs.readdirSync(fullPath)
+      }
+       traverseDir(fullPath);
+     } else {
+       console.log(fullPath);
+       files[fullPath]={
+        path: fullPath,
+        type: 'file',
+        children: []
+      }
+     }  
+  });
+  return files;
+}

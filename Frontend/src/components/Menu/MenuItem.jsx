@@ -34,7 +34,7 @@ export default class MenuItem extends Component {
 
   render() {
 
-    const {item, level, toggleDirectory} = this.props;
+    const {item, level, onClick} = this.props;
 
     const padding = (level) =>{
         return level*20;
@@ -47,7 +47,7 @@ export default class MenuItem extends Component {
     return (
       <div>
         <div className='item' style={paddingStyle}>
-            <div className='icons' onClick={toggleDirectory}>
+            <div className='icons' onClick={onClick}>
                 {item.type === 'folder' && (item.isOpen ? <FaChevronDown/> : <FaChevronRight/>)}
             </div>
 
@@ -57,9 +57,9 @@ export default class MenuItem extends Component {
                 {item.type === 'folder' && !item.isOpen && <FaFolder/>}
             </div>
 
-            <div onClick={toggleDirectory}>{item.name}</div>
+            <div>{item.name}</div>
         </div>
-        {this.state.fileArr.map((file, i)=>{
+        {item.isOpen && this.state.fileArr.map((file, i)=>{
             <MenuItem item={file} level={level+1}/>
             {console.log("here")}
         })}
